@@ -8,23 +8,12 @@ use crate::humidity_sensor::get_measurements;
 
 #[tokio::main]
 pub async fn new_weather_entry() {
-    let data = get_measurements();
-    println!("{:?}", data);
-
     let mut counter = 0;
 
-    while counter < 200 {
+    loop {
         counter += 1;
 
-        let local = chrono::offset::Local::now();
-
-        let new_weather = Weather {
-            temperature: data.temperature,
-            humidity: data.humidity,
-            pressure: data.pressure,
-            date: local,
-        };
-
+        let new_weather = get_measurements();
         println!("Posting: {:#?}", new_weather);
 
         let _new_post = reqwest::Client::new()
@@ -34,7 +23,7 @@ pub async fn new_weather_entry() {
             .await
             .expect("Unable to contact the server!");
 
-        thread::sleep(time::Duration::from_secs(15));
+        thread::sleep(time::Duration::from_secs(1800));
     }
 }   
 
@@ -60,7 +49,8 @@ pub async fn test_weather_post() {
         println!("Successfully running from here!");
 
         let new_weather = Weather {
-            temperature: temp,
+            temperature_c: temp,
+            temperature_f: temp,
             humidity: humi,
             pressure: pres,
             date: local,

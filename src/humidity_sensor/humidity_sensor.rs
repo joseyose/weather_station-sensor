@@ -24,8 +24,11 @@ pub fn collect_measurements(mut sensor: BME280<I2cdev, Delay>) -> Weather {
     let local = chrono::offset::Local::now();
     let measurements = sensor.measure().unwrap();
 
+    let temp_f: f64 = measurements.temperature as f64 * 9.0 / 5.0 + 32.0;
+
     Weather {
-        temperature: measurements.temperature as f64,
+        temperature_c: measurements.temperature as f64,
+        temperature_f: temp_f, 
         humidity: measurements.humidity as f64,
         pressure: measurements.pressure as f64,
         date: local,
